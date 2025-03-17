@@ -31,6 +31,16 @@ async function run() {
     const blogCollection = database.collection("blog");
     const userCollection = client.db("wandaBlog").collection("users");
     // uses items
+    app.get("/users", async (req, res) => {
+      const cursor = userCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    app.post("/users", async (req, res) => {
+      const newUser = req.body;
+      console.log("creating new user", newUser);
+      const result = await userCollection.insertOne(newUser);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
