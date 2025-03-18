@@ -31,6 +31,7 @@ async function run() {
     const blogCollection = database.collection("blog");
     const userCollection = client.db("wandaBlog").collection("users");
     // uses items
+
     app.get("/users", async (req, res) => {
       const cursor = userCollection.find();
       const result = await cursor.toArray();
@@ -41,8 +42,8 @@ async function run() {
       console.log("creating new user", newUser);
       const result = await userCollection.insertOne(newUser);
     });
-    app.patch("/users/:email", async (req, res) => {
-      const email = req.params.email;
+    app.patch("/users", async (req, res) => {
+      const email = req.body.email;
       const filter = { email };
       const updatedDoc = {
         $set: {
@@ -53,6 +54,12 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await userCollection.deleteOne(query);
+      res.send(result);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
